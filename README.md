@@ -2,7 +2,7 @@
 
 A conversational agent that lets non-technical managers query multilingual App Store reviews in natural language. It supports semantic retrieval (quotes, themes), SQL aggregation (counts, rankings), and cross-country comparison (e.g. Turkish vs Spanish parents on teacher feedback). Answers cite real review IDs and verbatim snippets.
 
-> **Platform note:** Developed and tested on **Windows 11** with **Python 3.10**. Linux/macOS may work but Chroma/PyTorch import order and console encoding fixes were added specifically for Windows.
+> **Platform note:** Developed and tested on **Windows 11** with **Python 3.10 and 3.11**. Linux/macOS may work but Chroma/PyTorch import order and console encoding fixes were added specifically for Windows.
 
 ---
 

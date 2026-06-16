@@ -116,3 +116,12 @@ SQLite uses `INSERT OR REPLACE` on `review_id`. Chroma uses `upsert` with the sa
 - Chroma must import before pandas in `agent/tools.py` to avoid DLL segfaults
 - Console logging uses UTF-8 reconfiguration to handle multilingual trace output
 - BGE-M3 runs on CPU (`device="cpu"`) for stability
+
+## Trustpilot reviews:
+- URL: https://se.trustpilot.com/_next/data/businessunitprofile-consumersite-2.6966.0/review/novakidschool.com.json?     businessUnit=novakidschool.com&languages=all
+ or 
+- URL: https://www.trustpilot.com/_next/data/businessunitprofile-consumersite-2.6966.0/review/novakidschool.com.json?page=3&businessUnit=novakidschool.com
+Request Method
+GET
+
+as examples we can scrape it although it falls under a morally grey area, but as its our own reviews and ratings it wont be that bad, as long as we set our own rate limits to be under the trustpilot's default ratelimits, we should be good, although trustpilots robots.txt file says to avoid reviews and ratings and tries to stop most crawlers etc from scraping it but again its a moral dilema not a technological one, if the need arises we can do it.
