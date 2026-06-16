@@ -24,4 +24,10 @@ OUT_OF_CORPUS_CASE = EvalCase(
     description="Response should not make specific factual claims about Windows desktop users",
 )
 
-ALL_CASES = [AGGREGATION_CASE, OUT_OF_CORPUS_CASE]
+ROUTING_CASE = EvalCase(
+    name="aggregation_routing",
+    query="What is the #1 complaint topic in 1-star reviews?",
+    description="Agent must call aggregation_query with group_by=topic and rating=1 filter",
+)
+
+ALL_CASES = [AGGREGATION_CASE, OUT_OF_CORPUS_CASE, ROUTING_CASE]

@@ -1,4 +1,4 @@
-"""Eval runner for aggregation accuracy and out-of-corpus grounding."""
+"""Eval runner for aggregation accuracy, routing, and out-of-corpus grounding."""
 
 from __future__ import annotations
 
@@ -12,7 +12,12 @@ from openai import OpenAI
 
 import config
 from agent.agent import ReviewAgent
-from evals.cases import AGGREGATION_CASE, OUT_OF_CORPUS_CASE, ALL_CASES
+from evals.cases import (
+    AGGREGATION_CASE,
+    OUT_OF_CORPUS_CASE,
+    ROUTING_CASE,
+    ALL_CASES,
+)
 
 
 def load_ground_truth() -> dict:
@@ -71,6 +76,31 @@ def run_aggregation_case(agent: ReviewAgent, ground_truth: dict) -> tuple[bool, 
     return passed, detail
 
 
+def run_routing_case(agent: ReviewAgent) -> tuple[bool, str]:
+    response = agent.chat(ROUTING_CASE.query)
+
+    aggregation_calls = [
+        r for r in response.raw_tool_results if r.get("tool_name") == "aggregation_query"
+    ]
+    if not aggregation_calls:
+        return False, f"No aggregation_query call; tools={response.tools_used}"
+
+    matched = False
+    for call in aggregation_calls:
+        args = call.get("input", {})
+        group_by = args.get("group_by")
+        filters = args.get("filters") or {}
+        if group_by == "topic" and int(filters.get("rating", 0)) == 1:
+            matched = True
+            break
+
+    detail = (
+        f"tools={response.tools_used}, "
+        f"aggregation_input={aggregation_calls[0].get('input')}"
+    )
+    return matched, detail
+
+
 def run_out_of_corpus_case(agent: ReviewAgent, client: OpenAI) -> tuple[bool, str]:
     response = agent.chat(OUT_OF_CORPUS_CASE.query)
     judge_prompt = (
@@ -103,6 +133,9 @@ def run_all() -> int:
     passed, detail = run_aggregation_case(agent, ground_truth)
     results.append((AGGREGATION_CASE.name, passed, detail))
 
+    passed, detail = run_routing_case(agent)
+    results.append((ROUTING_CASE.name, passed, detail))
+
     passed, detail = run_out_of_corpus_case(agent, client)
     results.append((OUT_OF_CORPUS_CASE.name, passed, detail))
 
@@ -123,6 +156,13 @@ def test_aggregation_accuracy():
     ground_truth = load_ground_truth()
     agent = ReviewAgent()
     passed, detail = run_aggregation_case(agent, ground_truth)
+    assert passed, detail
+
+
+def test_aggregation_routing():
+    load_dotenv()
+    agent = ReviewAgent()
+    passed, detail = run_routing_case(agent)
     assert passed, detail
 
 

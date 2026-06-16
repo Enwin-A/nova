@@ -110,6 +110,7 @@ SQLite uses `INSERT OR REPLACE` on `review_id`. Chroma uses `upsert` with the sa
 |---|---|
 | Google Play reviews | Out of scope for v1 App Store corpus |
 | Ingest-time translation pipeline | Replaced by multilingual embeddings + synthesis-time translation |
+| Trace UI | JSONL file logging only; time went to hybrid backend + usable chat |
 
 ## Windows notes
 
